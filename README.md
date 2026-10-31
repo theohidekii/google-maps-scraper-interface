@@ -5,6 +5,30 @@ quem tem telefone, quem tem WhatsApp, quem tem site próprio e quem só tem Inst
 
 Tudo roda **no seu computador**, via Docker, em `http://localhost:8080`.
 
+![Resultados no mapa com filtros de prospecção](assets/screenshots/03-resultados-filtros.jpg)
+
+## Telas
+
+**Sugestões enquanto digita.** No "Onde?", bairros e cidades com nome parecido, com Brasil primeiro e os
+lugares perto do mapa no topo. No "O que", tipos de negócio e as suas buscas anteriores.
+
+| Onde? | O que você procura? |
+|---|---|
+| ![Sugestões de lugares ao digitar "aguas"](assets/screenshots/01-busca-sugestoes.jpg) | ![Sugestões de tipos de negócio ao digitar "clin"](assets/screenshots/02-sugestoes-o-que.jpg) |
+
+**Filtro "Sem site próprio".** Empresas cujo link no Google é só Instagram, Linktree, Wix grátis etc.
+aparecem destacadas em amarelo e entram como sem site, junto com quem não tem link nenhum.
+
+![Lista filtrada por empresas sem site próprio](assets/screenshots/04-sem-site-proprio.jpg)
+
+**Buscas favoritas.** Marque com ☆ e rode de novo com ▶ para achar empresas novas.
+
+![Bloco de buscas favoritas](assets/screenshots/05-favoritas.jpg)
+
+**Painel.** Resumo, filtros, tabela e mapa lado a lado, com exportação para Excel e Google Sheets.
+
+![Modo Painel com resumo, filtros e tabela](assets/screenshots/06-painel.jpg)
+
 ## Créditos
 
 Este projeto **não** implementa a coleta de dados. Ele foi construído sobre:
