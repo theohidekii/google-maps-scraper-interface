@@ -1,101 +1,103 @@
-# Google Maps Scraper — Interface de Prospecção
+# Google Maps Scraper — Prospecting Interface
 
-Interface web para buscar empresas no Google Maps e transformar os resultados em listas de prospecção:
-quem tem telefone, quem tem WhatsApp, quem tem site próprio e quem só tem Instagram.
+A web interface for searching businesses on Google Maps and turning the results into prospecting lists:
+who has a phone number, who has WhatsApp, who has their own website and who only has Instagram.
 
-Tudo roda **no seu computador**, via Docker, em `http://localhost:8080`.
+Everything runs **on your own computer**, via Docker, at `http://localhost:8080`.
 
-![Resultados no mapa com filtros de prospecção](assets/screenshots/03-resultados-filtros.jpg)
+The interface itself is in Brazilian Portuguese; UI labels below are quoted as they appear, with an English translation.
 
-## Telas
+![Map results with prospecting filters](assets/screenshots/03-resultados-filtros.jpg)
 
-**Sugestões enquanto digita.** No "Onde?", bairros e cidades com nome parecido, com Brasil primeiro e os
-lugares perto do mapa no topo. No "O que", tipos de negócio e as suas buscas anteriores.
+## Screens
 
-| Onde? | O que você procura? |
+**Suggestions as you type.** In "Onde?" (Where?), neighborhoods and cities with similar names, with Brazil first
+and places near the map at the top. In "O que" (What), business types and your previous searches.
+
+| Onde? (Where?) | O que você procura? (What are you looking for?) |
 |---|---|
-| ![Sugestões de lugares ao digitar "aguas"](assets/screenshots/01-busca-sugestoes.jpg) | ![Sugestões de tipos de negócio ao digitar "clin"](assets/screenshots/02-sugestoes-o-que.jpg) |
+| ![Place suggestions while typing "aguas"](assets/screenshots/01-busca-sugestoes.jpg) | ![Business type suggestions while typing "clin"](assets/screenshots/02-sugestoes-o-que.jpg) |
 
-**Filtro "Sem site próprio".** Empresas cujo link no Google é só Instagram, Linktree, Wix grátis etc.
-aparecem destacadas em amarelo e entram como sem site, junto com quem não tem link nenhum.
+**"Sem site próprio" (No own website) filter.** Businesses whose Google link is only Instagram, Linktree,
+free Wix and so on are highlighted in yellow and counted as having no website, along with those that have no link at all.
 
-![Lista filtrada por empresas sem site próprio](assets/screenshots/04-sem-site-proprio.jpg)
+![List filtered to businesses without their own website](assets/screenshots/04-sem-site-proprio.jpg)
 
-**Buscas favoritas.** Marque com ☆ e rode de novo com ▶ para achar empresas novas.
+**Favorite searches.** Mark a search with ☆ and run it again with ▶ to find new businesses.
 
-![Bloco de buscas favoritas](assets/screenshots/05-favoritas.jpg)
+![Favorite searches block](assets/screenshots/05-favoritas.jpg)
 
-**Painel.** Resumo, filtros, tabela e mapa lado a lado, com exportação para Excel e Google Sheets.
+**Dashboard.** Summary, filters, table and map side by side, with export to Excel and Google Sheets.
 
-![Modo Painel com resumo, filtros e tabela](assets/screenshots/06-painel.jpg)
+![Dashboard mode with summary, filters and table](assets/screenshots/06-painel.jpg)
 
-## Créditos
+## Credits
 
-Este projeto **não** implementa a coleta de dados. Ele foi construído sobre:
+This project does **not** implement the data collection. It is built on top of:
 
-- **[gosom/google-maps-scraper](https://github.com/gosom/google-maps-scraper)**, de Georgios Komninos
-  (licença MIT): o motor que faz a coleta no Google Maps e expõe a API REST usada pela interface.
-- **Google Maps Scraper Kit**, de Mahan ([mahanjafari-dev](https://github.com/mahanjafari-dev))
-  (licença MIT): a configuração Docker/nginx, os scripts e a primeira versão da interface
-  (modos Mapa e Painel), obtido de [vzbaggio/google-maps-scraper-kit](https://github.com/vzbaggio/google-maps-scraper-kit).
+- **[gosom/google-maps-scraper](https://github.com/gosom/google-maps-scraper)**, by Georgios Komninos
+  (MIT license): the engine that scrapes Google Maps and exposes the REST API used by the interface.
+- **Google Maps Scraper Kit**, by Mahan ([mahanjafari-dev](https://github.com/mahanjafari-dev))
+  (MIT license): the Docker/nginx setup, the scripts and the first version of the interface
+  (Map and Dashboard modes), obtained from [vzbaggio/google-maps-scraper-kit](https://github.com/vzbaggio/google-maps-scraper-kit).
 
-Os avisos de licença originais estão preservados em [LICENSE](LICENSE) e [CREDITS.md](CREDITS.md).
-Se o projeto for útil para você, deixe uma ⭐ no [repositório do gosom](https://github.com/gosom/google-maps-scraper).
+The original license notices are preserved in [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).
+If this project is useful to you, leave a ⭐ on [gosom's repository](https://github.com/gosom/google-maps-scraper).
 
-## O que esta versão adiciona na interface
+## What this version adds to the interface
 
-**Busca**
-- **Sugestões enquanto digita** no campo "O que você procura?": suas buscas anteriores e uma lista de
-  ~200 tipos de negócio em português, sem diferenciar acentos (`acai` encontra "açaiteria").
-- **Sugestões de lugares** no campo "Onde?" (via [Photon](https://photon.komoot.io), OpenStreetMap):
-  bairros e cidades com nome parecido, Brasil primeiro e lugares próximos do mapa no topo
-  (`aguas` → Águas Claras, DF). Navegação com ↑ ↓, Enter e Esc.
-- **Buscas favoritas**: marque uma busca com ☆ e rode de novo com ▶ para encontrar empresas novas.
+**Search**
+- **Suggestions as you type** in the "O que você procura?" (What are you looking for?) field: your previous searches
+  and a list of ~200 business types in Portuguese, accent-insensitive (`acai` matches "açaiteria").
+- **Place suggestions** in the "Onde?" (Where?) field (via [Photon](https://photon.komoot.io), OpenStreetMap):
+  neighborhoods and cities with similar names, Brazil first and places near the map at the top
+  (`aguas` → Águas Claras, DF). Navigate with ↑ ↓, Enter and Esc.
+- **Favorite searches**: mark a search with ☆ and run it again with ▶ to find new businesses.
 
-**Resultados** (abas Mapa e Painel)
-- **Site próprio × rede social**: links para Instagram, Facebook, Linktree, iFood, Wix grátis,
-  sites grátis do Google etc. contam como **sem site próprio**, aparecem destacados em amarelo
-  e saem na exportação na coluna "Tipo de site".
-- **Filtros de prospecção**: site (próprio / sem site próprio / só redes), nota mínima,
-  com WhatsApp e com telefone.
-- **Sem repetidos** mais preciso: a mesma empresa é reconhecida pelo link do Maps, ID do Google,
-  telefone ou nome + endereço, comum em buscas com vários termos.
+**Results** (Map and Dashboard tabs)
+- **Own website vs. social media**: links to Instagram, Facebook, Linktree, iFood, free Wix,
+  free Google sites and so on count as **no own website**, are highlighted in yellow
+  and are exported in the "Tipo de site" (Website type) column.
+- **Prospecting filters**: website (own / no own website / social media only), minimum rating,
+  has WhatsApp and has phone.
+- **More accurate de-duplication**: the same business is recognized by its Maps link, Google ID,
+  phone number or name + address, which is common in searches with several terms.
 
-## Como rodar
+## How to run
 
-Pré-requisito: [Docker Desktop](https://www.docker.com/products/docker-desktop) aberto.
+Prerequisite: [Docker Desktop](https://www.docker.com/products/docker-desktop) running.
 
 ```bash
 docker compose up -d
 ```
 
-Depois abra **http://localhost:8080**. Para parar:
+Then open **http://localhost:8080**. To stop:
 
 ```bash
 docker compose stop
 ```
 
-O passo a passo completo (scripts de linha de comando, solução de problemas, uso com o Claude Code)
-está em [SETUP.md](SETUP.md).
+The full walkthrough (command-line scripts, troubleshooting, using it with Claude Code)
+is in [SETUP.md](SETUP.md).
 
-## Estrutura
+## Structure
 
-| Caminho | O que é |
+| Path | What it is |
 |---|---|
-| `frontend/` | A interface: `index.html` + `app.js` (modo Mapa) e `painel.html` + `painel.js` (modo Painel) |
-| `docker-compose.yml`, `nginx.conf` | Sobe o scraper e o nginx que serve a interface em `localhost:8080` |
-| `scripts/` | `scrape.py` / `scrape.sh` para buscar pela linha de comando |
-| `.claude/` | Skill e comandos para o Claude Code operar o scraper |
+| `frontend/` | The interface: `index.html` + `app.js` (Map mode) and `painel.html` + `painel.js` (Dashboard mode) |
+| `docker-compose.yml`, `nginx.conf` | Starts the scraper and the nginx server that serves the interface at `localhost:8080` |
+| `scripts/` | `scrape.py` / `scrape.sh` for searching from the command line |
+| `.claude/` | Skill and commands for Claude Code to operate the scraper |
 
-## Uso responsável
+## Responsible use
 
-- Use com moderação: muitas buscas seguidas, quantidades altas ou buscas agendadas **sem proxies**
-  podem fazer o Google **bloquear temporariamente o seu IP**. Uma busca por vez é o mais seguro.
-- Coletar dados do Google Maps vai contra os Termos de Serviço do Google.
-- Telefones e e-mails de empresas são dados pessoais em muitos casos: siga a **LGPD** ao usar e
-  armazenar esses contatos.
-- A API do scraper não tem autenticação e fica presa a `127.0.0.1`. Não a exponha na internet.
+- Use it in moderation: many searches in a row, large quantities or scheduled searches **without proxies**
+  can get your **IP temporarily blocked** by Google. One search at a time is the safest.
+- Scraping data from Google Maps goes against Google's Terms of Service.
+- Business phone numbers and emails are often personal data: follow the **LGPD** (Brazil's data protection law)
+  when using and storing these contacts.
+- The scraper API has no authentication and is bound to `127.0.0.1`. Do not expose it to the internet.
 
-## Licença
+## License
 
-MIT. Veja [LICENSE](LICENSE) (kit) e [CREDITS.md](CREDITS.md) (motor de coleta, gosom).
+MIT. See [LICENSE](LICENSE) (kit) and [CREDITS.md](CREDITS.md) (scraping engine, gosom).
