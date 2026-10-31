@@ -197,11 +197,30 @@
             <option value="title:1">Nome (A–Z)</option>
           </select>
         </label>
+        <label class="filter" title="Site próprio = domínio da empresa. Link para Instagram, Facebook, Linktree, iFood etc. conta como sem site.">
+          <span class="filter-title">Site</span>
+          <select id="site-filter" class="input">
+            <option value="">Todos</option>
+            <option value="own">Com site próprio</option>
+            <option value="none">Sem site próprio</option>
+            <option value="social">Só Instagram / redes</option>
+          </select>
+        </label>
+        <label class="filter">
+          <span class="filter-title">Nota mínima</span>
+          <select id="min-rating" class="input">
+            <option value="">Qualquer</option>
+            <option value="3.5">3,5+</option>
+            <option value="4">4,0+</option>
+            <option value="4.5">4,5+</option>
+          </select>
+        </label>
         <div class="filter checks">
           <span class="filter-title">Mostrar só</span>
           <label class="check" id="in-radius-wrap" title="Esconde empresas fora do raio escolhido na busca"><input id="in-radius" type="checkbox" checked> <span id="in-radius-label">dentro do raio</span></label>
-          <label class="check" title="Esconde empresas que aparecem mais de uma vez (mesmo telefone)"><input id="dedupe" type="checkbox" checked> sem repetidos</label>
+          <label class="check" title="Esconde a mesma empresa repetida (mesmo link do Maps, telefone ou nome + endereço), comum quando a busca tem vários termos"><input id="dedupe" type="checkbox" checked> sem repetidos</label>
           <label class="check"><input id="only-phone" type="checkbox"> com telefone</label>
+          <label class="check"><input id="only-wa" type="checkbox"> com WhatsApp</label>
           <label class="check"><input id="only-email" type="checkbox"> com e-mail</label>
         </div>
       </div>

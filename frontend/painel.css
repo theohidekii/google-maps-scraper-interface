@@ -285,7 +285,8 @@ select.input.menu:hover { background-color: rgba(26, 115, 232, .18); }
 .mini { flex: 1 1 110px; padding: 10px 14px; border-radius: 16px; background: rgba(118, 118, 128, .07); }
 .mini b { display: block; font-size: 18px; font-weight: 700; letter-spacing: -.4px; line-height: 1.25; }
 .mini span { font-size: 11.5px; color: var(--label-2); }
-.filters { display: grid; grid-template-columns: 2fr 1.3fr 1.2fr auto; gap: 10px; align-items: end; padding: 12px; background: rgba(118, 118, 128, .07); border-radius: 20px; margin-bottom: 12px; }
+.filters { display: grid; grid-template-columns: 2fr 1.3fr 1.2fr 1.3fr 1fr; gap: 10px; align-items: end; padding: 12px; background: rgba(118, 118, 128, .07); border-radius: 20px; margin-bottom: 12px; }
+.filters .filter.checks { grid-column: 1 / -1; }
 @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } }
 .filters .input { background-color: #fff; height: 34px; font-size: 13px; border-radius: 999px; box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
 .filter { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
@@ -321,6 +322,8 @@ td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: t
 .contact a { overflow-wrap: anywhere; }
 .contact .wa { display: inline-flex; width: max-content; margin-top: 2px; padding: 1px 8px; border-radius: 999px; background: rgba(52, 168, 83, .12); color: var(--green-ink); font-size: 11.5px; font-weight: 600; text-decoration: none; }
 .contact .none { color: var(--label-3); }
+/* link that isn't the company's own site (Instagram, Linktree…): a lead for "sem site" */
+.contact .social { display: inline-flex; width: max-content; margin-top: 2px; padding: 1px 8px; border-radius: 999px; background: rgba(251, 188, 4, .16); color: var(--amber-ink); font-size: 11.5px; font-weight: 600; text-decoration: none; }
 .stars { color: var(--yellow); }
 .reviews { display: block; font-size: 11.5px; color: var(--label-3); }
 .addr { min-width: 200px; color: var(--label-2); }

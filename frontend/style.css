@@ -148,6 +148,16 @@ button { font: inherit; color: inherit; }
 .kbd { font: 600 11px Inter, sans-serif; color: var(--label-3); border: 1px solid var(--separator); border-radius: 5px; padding: 1px 6px; }
 .search-row:focus-within .kbd { display: none; }
 
+/* type-ahead suggestions: floats under the focused search row (hence the visible overflow) */
+.search-group { position: relative; overflow: visible; }
+.suggest { position: absolute; left: 0; right: 0; z-index: 20; margin: 0; padding: 6px 0; list-style: none; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--glass-shadow); max-height: 320px; overflow-y: auto; }
+.sug { display: flex; align-items: center; gap: 12px; padding: 9px 14px; cursor: pointer; }
+.sug:hover, .sug.active { background: var(--fill); }
+.sug-icon { width: 18px; height: 18px; flex: none; fill: var(--label-3); }
+.sug-main { font-size: 15px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sug-main b { font-weight: 600; color: var(--label); }
+.sug-note { padding: 9px 14px; font-size: 12.5px; color: var(--label-3); }
+
 /* menu (select) */
 .menu {
   appearance: none; border: 0; background: transparent; font: 500 15px Inter, -apple-system, sans-serif; color: var(--blue);
@@ -238,6 +248,11 @@ button { font: inherit; color: inherit; }
 .job:hover .job-del { opacity: 1; }
 .job-del:hover { background: rgba(234, 67, 53, .1); color: var(--red); }
 .job-del svg { width: 19px; height: 19px; }
+.job-del.star:hover { background: rgba(251, 188, 4, .16); color: var(--amber-ink); }
+.job-del.star.on { color: var(--yellow); opacity: 1; }
+.job-del.run { color: var(--blue); opacity: 1; }
+.job-del.run:hover { background: var(--blue-tint); color: var(--blue); }
+.job.fav .job-icon { background: rgba(251, 188, 4, .16); color: var(--yellow); }
 .empty { color: var(--label-3); text-align: center; padding: 24px 16px; margin: 0; list-style: none; font-size: 14px; }
 
 /* credits */
@@ -278,6 +293,7 @@ button { font: inherit; color: inherit; }
 /* filters wrap onto new lines instead of scrolling sideways (nothing gets cut off) */
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 0 12px; }
 .chip-row .chip-select { flex: 1 1 100%; max-width: none; }
+.chip-row .chip-select.half { flex: 1 1 calc(50% - 3px); }
 .chip {
   flex: none; display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border: 0; border-radius: 999px;
   background: var(--surface); box-shadow: 0 0 0 1px var(--separator); color: var(--label);
@@ -318,6 +334,9 @@ button { font: inherit; color: inherit; }
 .act svg { width: 15px; height: 15px; }
 .act.wa { background: rgba(52, 168, 83, .14); color: var(--green-ink); }
 .act.wa:hover { background: rgba(52, 168, 83, .22); }
+/* link that isn't the company's own site (Instagram, Linktree…): a lead for "sem site" */
+.act.social { background: rgba(251, 188, 4, .16); color: var(--amber-ink); }
+.act.social:hover { background: rgba(251, 188, 4, .26); }
 
 /* ── map chrome ── */
 .leaflet-control-zoom { border: 0 !important; border-radius: 12px !important; overflow: hidden; box-shadow: var(--glass-shadow) !important; }

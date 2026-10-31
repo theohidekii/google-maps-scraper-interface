@@ -42,6 +42,7 @@
               <svg class="row-icon pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
               <input id="location" type="text" placeholder="Onde? Bairro, cidade…" aria-label="Onde?" enterkeyhint="search">
             </label>
+            <ul id="suggest" class="suggest" role="listbox" aria-label="Sugestões" hidden></ul>
           </div>
           <p id="geo-status" class="footnote">Ex.: <em>dentista</em> em <em>Barra Funda, São Paulo</em>. Várias buscas? Separe por vírgula.</p>
 
@@ -102,6 +103,12 @@
           <button id="submit" class="btn-primary" type="submit"><span class="btn-label">Pesquisar</span></button>
         </form>
 
+        <div id="favs-wrap" hidden>
+          <div class="section-head"><h2>Favoritas</h2></div>
+          <ul id="favs" class="group jobs"></ul>
+          <p class="footnote">▶ roda a busca de novo, bom para achar empresas novas de tempos em tempos.</p>
+        </div>
+
         <div class="section-head">
           <h2>Suas buscas</h2>
           <span id="health" class="health"><i></i><span>verificando…</span></span>
@@ -147,9 +154,22 @@
 
         <div class="chip-row">
           <select id="cat-filter" class="chip chip-select" aria-label="Categoria" title="Mostrar só uma categoria"><option value="">Todas as categorias</option></select>
+          <select id="site-filter" class="chip chip-select half" aria-label="Site" title="Site próprio = domínio da empresa. Link para Instagram, Facebook, Linktree, iFood etc. conta como sem site.">
+            <option value="">Site: todos</option>
+            <option value="own">Com site próprio</option>
+            <option value="none">Sem site próprio</option>
+            <option value="social">Só Instagram / redes</option>
+          </select>
+          <select id="min-rating" class="chip chip-select half" aria-label="Nota mínima" title="Esconde quem tem nota menor ou não tem nota">
+            <option value="">Qualquer nota</option>
+            <option value="3.5">Nota 3,5+</option>
+            <option value="4">Nota 4,0+</option>
+            <option value="4.5">Nota 4,5+</option>
+          </select>
           <button type="button" class="chip selected" id="in-radius" aria-pressed="true" title="Esconde empresas fora do raio escolhido na busca" hidden>Dentro do raio</button>
-          <button type="button" class="chip selected" id="dedupe" aria-pressed="true" title="Esconde empresas repetidas (mesmo telefone)">Sem duplicados</button>
+          <button type="button" class="chip selected" id="dedupe" aria-pressed="true" title="Esconde a mesma empresa repetida (mesmo link do Maps, telefone ou nome + endereço), comum quando a busca tem vários termos">Sem duplicados</button>
           <button type="button" class="chip" id="only-phone" aria-pressed="false" title="Mostra só quem tem telefone">Com telefone</button>
+          <button type="button" class="chip" id="only-wa" aria-pressed="false" title="Mostra só quem tem celular (dá para chamar no WhatsApp)">Com WhatsApp</button>
           <button type="button" class="chip" id="sort-rating" aria-pressed="false" title="Ordena pela nota no Google">Mais bem avaliados</button>
         </div>
 

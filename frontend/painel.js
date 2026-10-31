@@ -94,6 +94,40 @@
     return d.length === 11 && d[2] === "9" ? `https://wa.me/55${d}` : null;
   }
 
+  // The "website" Google shows is often just a social profile, a link-in-bio page, a delivery/booking
+  // listing or a free subdomain. For prospecting those count as "no site of its own". (Same list as app.js.)
+  const NOT_OWN_SITE = {
+    "instagram.com": "Instagram", "facebook.com": "Facebook", "fb.com": "Facebook", "fb.me": "Facebook",
+    "wa.me": "WhatsApp", "whatsapp.com": "WhatsApp", "tiktok.com": "TikTok", "youtube.com": "YouTube",
+    "youtu.be": "YouTube", "twitter.com": "X (Twitter)", "x.com": "X (Twitter)", "linkedin.com": "LinkedIn",
+    "threads.net": "Threads", "pinterest.com": "Pinterest", "t.me": "Telegram",
+    "linktr.ee": "Linktree", "linktree.com": "Linktree", "beacons.ai": "link na bio", "bio.link": "link na bio",
+    "linkin.bio": "link na bio", "lnk.bio": "link na bio", "taplink.cc": "link na bio", "taplink.at": "link na bio",
+    "campsite.bio": "link na bio", "instabio.cc": "link na bio", "linkbio.co": "link na bio",
+    "ifood.com.br": "iFood", "anota.ai": "Anota AI", "goomer.app": "Goomer", "rappi.com.br": "Rappi",
+    "doctoralia.com.br": "Doctoralia", "booksy.com": "Booksy", "trinks.com": "Trinks",
+    "business.site": "site grátis do Google", "sites.google.com": "Google Sites", "g.page": "Google Maps",
+    "goo.gl": "Google Maps", "wixsite.com": "Wix grátis", "negocio.site": "site grátis do Google",
+    "ueniweb.com": "site grátis", "webnode.page": "site grátis", "webnode.com.br": "site grátis",
+    "blogspot.com": "Blogspot", "wordpress.com": "WordPress grátis", "carrd.co": "Carrd",
+  };
+  // → null (no link) | { own: true, name: "clinicax.com.br" } | { own: false, name: "Instagram" }
+  function siteInfo(url) {
+    if (!url) return null;
+    let host;
+    try { host = new URL(/^https?:\/\//i.test(url) ? url : "https://" + url).hostname.toLowerCase().replace(/^www\./, ""); }
+    catch { return null; }
+    const d = Object.keys(NOT_OWN_SITE).find((d) => host === d || host.endsWith("." + d));
+    if (d) return { own: false, name: NOT_OWN_SITE[d] };
+    // Owners mistype these on Google ("instagran.com/…" was in a real result).
+    if (/instag|insta\.gr/.test(host)) return { own: false, name: "Instagram" };
+    if (/faceb|facebok/.test(host)) return { own: false, name: "Facebook" };
+    return { own: true, name: host };
+  }
+  const ownSite = (r) => !!siteInfo(r.website)?.own;
+  const siteKind = (r) => { const s = siteInfo(r.website); return !s ? "Sem site" : s.own ? "Próprio" : s.name; };
+  const fold = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
   // Great-circle distance in meters.
   function distance(lat1, lon1, lat2, lon2) {
     const R = 6371000, rad = Math.PI / 180;
@@ -486,7 +520,8 @@
       [fmt(rows.length), "empresas"],
       [fmt(n((r) => r.phone)), "com telefone"],
       [fmt(n((r) => whatsapp(r.phone))), "com WhatsApp"],
-      [fmt(n((r) => r.website)), "com site"],
+      [fmt(n(ownSite)), "com site próprio"],
+      [fmt(n((r) => r.website && !ownSite(r))), "só Instagram/redes"],
       ...(job.email ? [[fmt(n((r) => emailsOf(r).length)), "com e-mail"]] : []),
       [avg ? avg.toFixed(1).replace(".", ",") + " ★" : "—", "nota média"],
     ];
@@ -508,18 +543,31 @@
     const q = $("#filter").value.trim().toLowerCase();
     const cat = $("#cat-filter").value;
     const area = $("#in-radius").checked && job.lat && job.radius;
-    const onlyPhone = $("#only-phone").checked, onlyEmail = $("#only-email").checked;
+    const onlyPhone = $("#only-phone").checked, onlyWa = $("#only-wa").checked, onlyEmail = $("#only-email").checked;
+    const siteF = $("#site-filter").value, minRating = +$("#min-rating").value;
+    const siteOk = (r) => {
+      if (!siteF) return true;
+      const s = siteInfo(r.website);
+      return siteF === "own" ? !!s?.own : siteF === "none" ? !s?.own : !!s && !s.own;
+    };
     let rows = state.rows.filter((r) =>
       (!area || !+r.latitude || distance(job.lat, job.lon, +r.latitude, +r.longitude) <= job.radius) &&
-      (!cat || r.category === cat) && (!onlyPhone || r.phone) && (!onlyEmail || emailsOf(r).length) &&
+      (!cat || r.category === cat) && (!onlyPhone || r.phone) && (!onlyWa || whatsapp(r.phone)) &&
+      (!onlyEmail || emailsOf(r).length) && (!minRating || +r.review_rating >= minRating) && siteOk(r) &&
       (!q || [r.title, r.category, r.address, r.phone, r.website, r.emails].join(" ").toLowerCase().includes(q)));
+    state.dupes = 0;
     if ($("#dedupe").checked) {
-      const seen = new Set();
+      // A search with several terms ("dentista", "clínica odontológica") returns the same company once
+      // per term, so a row is a repeat if ANY of its identifiers was already seen.
+      const seen = new Set(), before = rows.length;
       rows = rows.filter((r) => {
-        const k = digits(r.phone) || r.place_id || r.link || r.title + r.address;
-        if (seen.has(k)) return false;
-        seen.add(k); return true;
+        const keys = [r.cid && "c" + r.cid, r.data_id && "d" + r.data_id, r.place_id && "p" + r.place_id, r.link && "l" + r.link,
+          digits(r.phone) && "t" + digits(r.phone), r.title && "n" + fold(r.title + "|" + r.address)].filter(Boolean);
+        const dup = keys.some((k) => seen.has(k));
+        keys.forEach((k) => seen.add(k));
+        return !dup;
       });
+      state.dupes = before - rows.length;
     }
     const [key, dirS] = $("#sort").value.split(":");
     if (key) {
@@ -533,11 +581,12 @@
 
   function renderResults() {
     const rows = (state.visible = visibleRows());
-    $("#export-count").textContent = `${fmt(rows.length)} de ${fmt(state.rows.length)} empresas`;
+    $("#export-count").textContent = `${fmt(rows.length)} de ${fmt(state.rows.length)} empresas` + (state.dupes ? ` · ${fmt(state.dupes)} repetidas` : "");
     $("#results-table tbody").innerHTML = rows.length ? rows.map((r, i) => {
       const wa = whatsapp(r.phone);
       const rating = +r.review_rating;
-      const site = r.website ? r.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "") : "";
+      const info = siteInfo(r.website);
+      const site = info?.own ? r.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "") : "";
       return `<tr data-i="${i}">
         <td><div class="co-name">${esc(r.title)}</div><div class="co-cat">${esc(r.category)}</div></td>
         <td><div class="contact">
@@ -545,6 +594,7 @@
           ${wa ? `<a class="wa" href="${wa}" target="_blank" rel="noopener">WhatsApp ↗</a>` : ""}
           ${emailsOf(r).map((m) => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join("")}
           ${site ? `<a href="${esc(r.website)}" target="_blank" rel="noopener">${esc(site.length > 34 ? site.slice(0, 34) + "…" : site)}</a>` : ""}
+          ${info && !info.own ? `<a class="social" href="${esc(r.website)}" target="_blank" rel="noopener" title="Sem site próprio: o link vai para ${esc(info.name)}">${esc(info.name)} ↗</a>` : ""}
         </div></td>
         <td class="num">${rating ? `<span class="stars">★</span> ${rating.toFixed(1).replace(".", ",")}<span class="reviews">${fmt(r.review_count)}</span>` : "—"}</td>
         <td class="addr">${esc(r.address.replace(r.title + " - ", ""))}</td>
@@ -554,7 +604,8 @@
     plotRows(rows);
   }
 
-  ["#filter", "#cat-filter", "#sort", "#in-radius", "#dedupe", "#only-phone", "#only-email"].forEach((s) => $(s).addEventListener("input", renderResults));
+  ["#filter", "#cat-filter", "#sort", "#site-filter", "#min-rating", "#in-radius", "#dedupe", "#only-phone", "#only-wa", "#only-email"]
+    .forEach((s) => $(s).addEventListener("input", renderResults));
   $("#results-table tbody").addEventListener("click", (e) => {
     if (e.target.closest("a")) return;
     const tr = e.target.closest("tr[data-i]");
@@ -565,9 +616,9 @@
   });
 
   // ───────────────────────── export ─────────────────────────
-  const EXPORT_HEAD = ["Nome", "Categoria", "Telefone", "WhatsApp", "E-mail", "Site", "Nota", "Avaliações", "Endereço", "Link Google Maps"];
+  const EXPORT_HEAD = ["Nome", "Categoria", "Telefone", "WhatsApp", "E-mail", "Site", "Tipo de site", "Nota", "Avaliações", "Endereço", "Link Google Maps"];
   const exportRow = (r) => [
-    r.title, r.category, r.phone, whatsapp(r.phone) || "", emailsOf(r).join(", "), r.website,
+    r.title, r.category, r.phone, whatsapp(r.phone) || "", emailsOf(r).join(", "), r.website, siteKind(r),
     +r.review_rating ? (+r.review_rating).toFixed(1).replace(".", ",") : "", r.review_count, r.address, r.link,
   ];
 
